@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Macro Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; max-width: 480px; margin:auto; padding:20px;}
+    label, button { display:block; margin:8px 0 4px; }
+    input, select, button { width:100%; padding:8px; }
+    button { margin-top:12px; }
+    .result { background:#f2f2f2; padding:12px; margin-top:20px; }
+    .result p { margin:8px 0; }
+  </style>
+</head>
+<body>
+  <h2>Macro Calculator</h2>
+  <label>Gender</label><select id="gender"><option>Male</option><option>Female</option></select>
+  <label>Age (years)</label><input id="age" type="number">
+  <label>Weight (kg)</label><input id="weight" type="number">
+  <label>Height (cm)</label><input id="height" type="number">
+  <label>Activity</label><select id="activity"><option value="1.2">Sedentary</option><option value="1.375">Lightly active</option><option value="1.55">Moderately active</option><option value="1.725">Very active</option><option value="1.9">Super active</option></select>
+  <label>Goal</label><select id="goal"><option value="maintain">Maintain</option><option value="loss">Loss</option><option value="gain">Gain</option></select>
+  <label>% Deficit/Surplus</label><input id="percent" type="number" value="20">
+  <button onclick="calc()">Calculate</button>
+  <div id="out" class="result" style="display:none;"></div>
+
+  <script>
+    function calc(){
+      const g = document.getElementById('gender').value;
+      const age = +document.getElementById('age').value;
+      const w = +document.getElementById('weight').value;
+      const h = +document.getElementById('height').value;
+      const act = +document.getElementById('activity').value;
+      const goal = document.getElementById('goal').value;
+      const pct = +document.getElementById('percent').value;
+      let bmr = g==='Male'?10*w+6.25*h-5*age+5:10*w+6.25*h-5*age-161;
+      let tdee = bmr*act;
+      let target = goal==='loss'?tdee*(1-pct/100):goal==='gain'?tdee*(1+pct/100):tdee;
+      let prot = goal==='loss'?2*w:goal==='gain'?1.6*w:1.8*w;
+      let fat = goal==='loss'?1*w:goal==='gain'?1*w:0.8*w;
+      let carb = (target-(prot*4+fat*9))/4;
+      document.getElementById('out').innerHTML=`
+        <p><strong>BMR:</strong> ${Math.round(bmr)} kcal</p>
+        <p><strong>TDEE:</strong> ${Math.round(tdee)} kcal</p>
+        <p><strong>Target Calories:</strong> ${Math.round(target)} kcal</p>
+        <p><strong>Protein:</strong> ${Math.round(prot)} g</p>
+        <p><strong>Fat:</strong> ${Math.round(fat)} g</p>
+        <p><strong>Carbs:</strong> ${Math.round(carb)} g</p>`;
+      document.getElementById('out').style.display='block';
+    }
+  </script>
+</body>
+</html>
